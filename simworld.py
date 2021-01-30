@@ -18,6 +18,7 @@ class Board:
         self.size = size
         self.empty_nodes = empty_nodes
         self.pawns = {}
+        self.state_t = None
         self.populate_board()
         self.graph = self.generate_graph()
     
@@ -43,13 +44,19 @@ class Board:
                         node.neighbours.append((possible_neighbor,self.pawns[tmp_coordinate]))
 
     def populate_board(self):
+        #Generate all the pegs (nodes) and find all they legal neighbours
+        state = ''
         for i in range(self.size):
             for j in range(i+1 if self.form == "triangle" else self.size):
-                is_empty = False
                 if (i,j) in self.empty_nodes:
                     is_empty = True
+                    state = state + '0'
+                else:
+                    is_empty = False
+                    state = state + '1'
                 node = Node((i,j), is_empty)   
                 self.pawns[(i,j)] = node
+        self.state_t = state 
         for coordinate in self.pawns:
             self.find_valid_neighbours(self.pawns[coordinate])
       
@@ -124,9 +131,39 @@ class Board:
         fig.savefig(bufffer)
         bufffer.seek(0)
         return Image.open(bufffer)
+    
+    def update_state(self):
+        #Iterate through all the pawns (nodes) and fill the string representing the state with 0 if that peg is empty or 1 if is not
+        state =''
+        for coordinate in self.pawns:
+            node = self.pawns[coordinate]
+            if node.is_empty:
+                state = state + '0'
+            else:
+                state = state + '1'
+        self.state_t = state
+
+    #fill a list of all permutation of a binary number of length n. Used to generate all possible states of the board.
+    def generate_all_binary_states(self, n, result, bs = ''):
+        if n:
+            self.generate_all_binary_states(n-1 , result,  bs + '0')
+            self.generate_all_binary_states(n-1, result, bs + '1')
+        else:
+            result.append(bs)
+
+    def find_all_legal_actions(self):
+        all_actions = list(())
+        for coordinate in self.pawns:
+            node = self.pawns[coordinate]
+            for neighbour in node.neighbours:
+                move = neighbour[0]
+                for adj_to_neighbour in neighbour[1].neighbours:
+                    if True:
+                        return -1
 
 
 
+'''
 if variables.debug:
     print(board.pawns)
     for key in board.pawns:
@@ -134,3 +171,4 @@ if variables.debug:
             print(str(key) + " : " + str(neighbour[1].coordinates))
             print(neighbour)
     print(board.pawns[(1,0)].neighbours)
+'''
