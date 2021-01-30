@@ -125,9 +125,6 @@ class Board:
         bufffer.seek(0)
         return Image.open(bufffer)
 
-empty_nodes = ((1,1), (2,2))
-board = Board("diamond",6, empty_nodes)
-board.show_board()
 
 
 if variables.debug:
