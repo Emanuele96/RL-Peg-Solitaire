@@ -7,8 +7,10 @@ import variables
 class Node:
     def __init__(self, coordinates, is_empty):
         self.coordinates = coordinates
-        self.neighbours = list(())
+        self.neighbours = {}
         self.is_empty = is_empty
+        self.is_selected = False
+        self.is_being_eaten = False
     
     def empty_the_node(self):
         self.is_empty = True
@@ -34,14 +36,14 @@ class Board:
                     print("tmp_coordinates: " + str(tmp_coordinate))
                 if tmp_coordinate != node.coordinates and  tmp_coordinate[0] >=0 and tmp_coordinate[0] < self.size and tmp_coordinate[1] >= 0 and tmp_coordinate[1] < self.size:
                     if self.pawns[tmp_coordinate] not in node.neighbours:
-                        node.neighbours.append((possible_neighbor,self.pawns[tmp_coordinate]))          
+                        node.neighbours[possible_neighbor] = self.pawns[tmp_coordinate]
         elif self.form == "triangle":
             possible_neighbors = ((-1,-1),(-1,0),(0,1),(1,1),(1,0),(0,-1))
             for possible_neighbor in possible_neighbors:
                 tmp_coordinate = (node.coordinates[0] + possible_neighbor[0], node.coordinates[1] + possible_neighbor[1])
                 if tmp_coordinate != node.coordinates and tmp_coordinate[0] >=0 and tmp_coordinate[0] < self.size and tmp_coordinate[1] >= 0 and tmp_coordinate[1] <= tmp_coordinate[0]:
                     if self.pawns[tmp_coordinate] not in node.neighbours:
-                        node.neighbours.append((possible_neighbor,self.pawns[tmp_coordinate]))
+                        node.neighbours[possible_neighbor] = self.pawns[tmp_coordinate]
 
     def populate_board(self):
         #Generate all the pegs (nodes) and find all they legal neighbours
@@ -72,8 +74,11 @@ class Board:
         #Then iterate through every node (row) and for each neighbour, find the corrispondent index(column) and fill that box with 1.
         for i in range(len(all_nodes)):
             node = self.pawns[all_nodes[i]]
-            for neighbour in node.neighbours:
-                j = all_nodes.index(neighbour[1].coordinates)
+            all_neigbours_keyes = list(())
+            for neighbour_key in node.neighbours.keys():
+                all_neigbours_keyes.append(neighbour_key)
+            for key in all_neigbours_keyes:
+                j = all_nodes.index(node.neighbours[key].coordinates)
                 adj_matrix[i][j] = 1
         return adj_matrix
 
@@ -85,11 +90,24 @@ class Board:
         for node in self.pawns.keys():
             all_nodes.append(node)
         for i in range(adj_matrix.shape[0]):
-            G.add_node(i, is_empty = self.pawns[all_nodes[i]].is_empty, diamond_plan = all_nodes[i][0] + all_nodes[i][1], triangle_plan =  all_nodes[i][0] )
+            G.add_node(i, coordinates = self.pawns[all_nodes[i]].coordinates, is_selected = False, is_being_eaten = False, is_empty = self.pawns[all_nodes[i]].is_empty, diamond_plan = all_nodes[i][0] + all_nodes[i][1], triangle_plan =  all_nodes[i][0] )
         if variables.debug:
             print(adj_matrix)
             print(G.nodes.data())
         return G
+
+    def update_graph(self):
+        #Iterate foreach node in the graph and syncronize attributes with the new values
+        nodes = list(self.graph.nodes(data=True))
+        for node in nodes:
+            print(node)
+            coordinates = node[1]["coordinates"]
+            node[1]["is_empty"] = self.pawns[coordinates].is_empty
+            node[1]["is_selected"] = self.pawns[coordinates].is_selected
+            node[1]["is_being_eaten"] = self.pawns[coordinates].is_being_eaten
+
+
+
 
     def show_board(self):
         #Plot the graph nodes and edges  with regards of plans (1 different plan per row), then do the necessary flipping and rotation for matching the board to the assigment
@@ -102,13 +120,18 @@ class Board:
         position = nx.multipartite_layout(self.graph, subset_key=plan_key, align="horizontal", center=[0,5])
         #Decide the color of each node, based on if it is empty or not
         nodes_color = []
-        nodes = list(self.graph.nodes.data("is_empty"))
+        nodes = list(self.graph.nodes(data=True))
         for node in nodes:
-            if node[1] == True:                
-                nodes_color.append("#ffffff")
+            color = ""
+            if node[1]["is_empty"]:                
+                color = "#ffffff"
+            elif node[1]["is_selected"]:                
+                color = "#17e310"
+            elif node[1]["is_being_eaten"]:                
+                color = "#fa0000"
             else:
-                nodes_color.append("#000000")
-        
+                color = "#000000"
+            nodes_color.append(color)
         options = {'node_size': 400,'width': 1, 'pos' : position, 'with_labels':False, 'font_weight':'bold', 'node_color': nodes_color, 'linewidths':5}
         nx.draw(self.graph, **options )
         #outline each node and specify linewidt to show an empty node. ax.collection is the path collection of matplotlib.
@@ -152,16 +175,64 @@ class Board:
             result.append(bs)
 
     def find_all_legal_actions(self):
+        #Analize the board and check all possible actions. Iterate trough all the nodes and for each neighboard, 
+        # check if with the move that needs to take from node-->neighboard, it comes to neighboard-->adj_to_neighboard
+        # and this is an empty node. 
         all_actions = list(())
+        '''
         for coordinate in self.pawns:
             node = self.pawns[coordinate]
-            for neighbour in node.neighbours:
-                move = neighbour[0]
-                for adj_to_neighbour in neighbour[1].neighbours:
-                    if True:
-                        return -1
+            for neighbour_key in node.neighbours:
+                move = neighbour_key
+                neighbour_node = node.neighbours[neighbour_key]
+                if move in neighbour_node.neighbours.keys():
+                    if neighbour_node.neighbours[move].is_empty:
+                        all_actions.append((node, move))
+        '''
+        for node in self.pawns.values():
+            if node.is_empty:
+                continue
+            for neighbour_object in node.neighbours.items():
+                move = neighbour_object[0]
+                neighbour = neighbour_object[1]
+                if neighbour.is_empty:
+                    continue
+                if move in neighbour.neighbours.keys():
+                    if neighbour.neighbours[move].is_empty:
+                        all_actions.append((node, move))
+                        print('from: ' + str(node.coordinates) + ' move: ' + str(move) + ' eat: ' + str(neighbour.coordinates) + 'because ' +  str(neighbour.neighbours[move].coordinates) + " is empty " + str(neighbour.neighbours[move].is_empty) + '\n')
+                                
+        if True:
+            print("all legal actions: " + str(len(all_actions)))
+            for action in all_actions:
+                print(str(action[0].coordinates) + "   " + str(action[1]) )
+        return all_actions
+                    
+    def get_reward(self):
+        #return reward for being in state self.state_t at time t
+        if int(self.state_t.replace('0',''), base=2) == 1:
+            return 10
+        return 0 
 
+    def update(self, action):
+        #Apply the action to the board and change interested nodes propriety such that it can be visualized 
+        selected_node = action[0]
+        selected_node.is_selected = True
+        offer = selected_node.neighbours[action[1]]
+        offer.is_being_eaten = True
+        if variables.visualize:
+            self.update_graph()
+            self.show_board()
+        empty_node = offer.neighbours[action[1]]
+        print(empty_node.is_empty)
+        empty_node.is_empty = False
+        print(empty_node.is_empty)
 
+        selected_node.is_selected = False
+        selected_node.is_empty = True
+        offer.is_being_eaten = False
+        offer.is_empty= True
+        self.update_graph()
 
 '''
 if variables.debug:

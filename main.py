@@ -1,5 +1,12 @@
 import game
+import actor
+import critic
 
 if __name__ == "__main__":  
-    game = game.Game()
+    #initializate variables
+    actor_module = actor.Actor()
+    critic_module = critic.Critic(actor_module)
+    game = game.Game(actor_module, critic_module)
+
+    #start a game
     game.start_game()
