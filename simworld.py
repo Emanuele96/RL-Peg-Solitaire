@@ -2,6 +2,8 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw 
 import io
 import variables
 class Node:
@@ -21,6 +23,7 @@ class Board:
         self.empty_nodes = empty_nodes
         self.pawns = {}
         self.state_t = None
+        self.move_counter = 0
         self.populate_board()
         self.graph = self.generate_graph()
     
@@ -100,7 +103,8 @@ class Board:
         #Iterate foreach node in the graph and syncronize attributes with the new values
         nodes = list(self.graph.nodes(data=True))
         for node in nodes:
-            print(node)
+            if variables.debug:
+                print(node)
             coordinates = node[1]["coordinates"]
             node[1]["is_empty"] = self.pawns[coordinates].is_empty
             node[1]["is_selected"] = self.pawns[coordinates].is_selected
@@ -145,6 +149,10 @@ class Board:
         if self.form == "diamond":
             img = img.transpose(Image.FLIP_LEFT_RIGHT)
         plt.clf()
+        #Print the move 
+        font = ImageFont.truetype('arial.ttf', 30)
+        draw = ImageDraw.Draw(img)
+        draw.text((0, 0),"Move nr. " + str(self.move_counter), (0,0,0), font=font)
         img.show()
         
 
@@ -178,17 +186,9 @@ class Board:
         #Analize the board and check all possible actions. Iterate trough all the nodes and for each neighboard, 
         # check if with the move that needs to take from node-->neighboard, it comes to neighboard-->adj_to_neighboard
         # and this is an empty node. 
+        if(variables.debug):
+            print("Move nr. " + str(self.move_counter))
         all_actions = list(())
-        '''
-        for coordinate in self.pawns:
-            node = self.pawns[coordinate]
-            for neighbour_key in node.neighbours:
-                move = neighbour_key
-                neighbour_node = node.neighbours[neighbour_key]
-                if move in neighbour_node.neighbours.keys():
-                    if neighbour_node.neighbours[move].is_empty:
-                        all_actions.append((node, move))
-        '''
         for node in self.pawns.values():
             if node.is_empty:
                 continue
@@ -200,9 +200,10 @@ class Board:
                 if move in neighbour.neighbours.keys():
                     if neighbour.neighbours[move].is_empty:
                         all_actions.append((node, move))
-                        print('from: ' + str(node.coordinates) + ' move: ' + str(move) + ' eat: ' + str(neighbour.coordinates) + 'because ' +  str(neighbour.neighbours[move].coordinates) + " is empty " + str(neighbour.neighbours[move].is_empty) + '\n')
+                        if(variables.debug):
+                            print('from: ' + str(node.coordinates) + ' move: ' + str(move) + ' eat: ' + str(neighbour.coordinates) + 'because ' +  str(neighbour.neighbours[move].coordinates) + " is empty " + str(neighbour.neighbours[move].is_empty) + '\n')
                                 
-        if True:
+        if variables.debug:
             print("all legal actions: " + str(len(all_actions)))
             for action in all_actions:
                 print(str(action[0].coordinates) + "   " + str(action[1]) )
@@ -216,6 +217,7 @@ class Board:
 
     def update(self, action):
         #Apply the action to the board and change interested nodes propriety such that it can be visualized 
+        self.move_counter = self.move_counter + 1
         selected_node = action[0]
         selected_node.is_selected = True
         offer = selected_node.neighbours[action[1]]
@@ -224,15 +226,14 @@ class Board:
             self.update_graph()
             self.show_board()
         empty_node = offer.neighbours[action[1]]
-        print(empty_node.is_empty)
         empty_node.is_empty = False
-        print(empty_node.is_empty)
-
         selected_node.is_selected = False
         selected_node.is_empty = True
         offer.is_being_eaten = False
         offer.is_empty= True
+        self.update_state()
         self.update_graph()
+        self.show_board()
 
 '''
 if variables.debug:

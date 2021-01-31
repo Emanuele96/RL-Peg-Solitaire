@@ -2,12 +2,12 @@ debug = False
 
 # Board variables
 empty_nodes = [(0,0)]
-board_form = "diamond"
-board_size = 4
+board_form = "triangle"
+board_size = 8
 
 #system variables
 learning = True
-number_of_moves = 5
+number_of_moves = 50
 visualize = True
 
 
