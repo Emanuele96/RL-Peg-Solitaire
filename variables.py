@@ -2,14 +2,14 @@ debug = False
 
 # Board variables
 empty_nodes = [(0,0)]
-board_form = "triangle"
+board_form = "diamond"
 board_size = 8
 
 #system variables
 learning = True
 number_of_moves = 50
 visualize = True
-frame_delay = 1000
+frame_delay = 200
 
 
 # Actor variables

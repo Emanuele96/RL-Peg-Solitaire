@@ -13,13 +13,13 @@ class Game:
     def start_game(self):
         if variables.visualize:
             pygame.init()
-            white = (255, 255, 255) 
-            X = 650
-            Y = 500
-            display_surface = pygame.display.set_mode((X, Y )) 
-            pygame.display.set_caption('Peg Solitaire')
-            #Show start board
-            frame = self.pil_image_to_pygame(self.board.show_board())
+            #white = (255, 255, 255) 
+            #Show start board, generate an img, get the size and initializate a pygame display
+            img = self.board.show_board()
+            X, Y = img.size
+            display_surface = pygame.display.set_mode((X,Y)) 
+            frame = self.pil_image_to_pygame(img)
+            pygame.display.set_caption('Peg Solitaire - Emanuele Caprioli')
             display_surface.blit(frame, (0, 0)) 
             pygame.display.update() 
             pygame.time.delay(variables.frame_delay)
@@ -40,7 +40,7 @@ class Game:
                     # Update the pygame display with the new frames
                     frame_1 = self.pil_image_to_pygame(new_frames[0])
                     frame_2 = self.pil_image_to_pygame(new_frames[1])
-                    display_surface.fill(white)
+                    #display_surface.fill(white)
                     display_surface.blit(frame_1, (0, 0)) 
                     pygame.display.update() 
                     pygame.time.delay(variables.frame_delay)
