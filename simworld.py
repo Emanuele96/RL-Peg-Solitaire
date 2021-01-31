@@ -156,7 +156,7 @@ class Board:
         #img.show()
         #img.save("frame.png")
         return img
-        
+
     def matplotlib_to_pil(self, fig):
         #Convert a Matplotlib object to an PIL Image   
         bufffer = io.BytesIO()
@@ -175,13 +175,6 @@ class Board:
                 state = state + '1'
         self.state_t = state
 
-    #fill a list of all permutation of a binary number of length n. Used to generate all possible states of the board.
-    def generate_all_binary_states(self, n, result, bs = ''):
-        if n:
-            self.generate_all_binary_states(n-1 , result,  bs + '0')
-            self.generate_all_binary_states(n-1, result, bs + '1')
-        else:
-            result.append(bs)
 
     def find_all_legal_actions(self):
         #Analize the board and check all possible actions. Iterate trough all the nodes and for each neighboard, 
@@ -237,7 +230,8 @@ class Board:
         if variables.visualize:
             self.update_graph()
             frame_2 = self.show_board()
-        return (frame_1, frame_2)
+            return (frame_1, frame_2)
+        return None
 '''
 if variables.debug:
     print(board.pawns)

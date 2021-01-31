@@ -8,5 +8,7 @@ if __name__ == "__main__":
     critic_module = critic.Critic(actor_module)
     game = game.Game(actor_module, critic_module)
 
-    #start a game
+    #start a game, an episode
+    critic_module.reset_eligibility()
+    actor_module.reset_eligibility()
     game.start_game()

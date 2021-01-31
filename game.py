@@ -47,10 +47,11 @@ class Game:
                     display_surface.blit(frame_2, (0, 0)) 
                     pygame.display.update() 
                     pygame.time.delay(variables.frame_delay)
-                for event in pygame.event.get() :
-                    if event.type == pygame.QUIT :
-                        pygame.quit()
-                        quit()
+                if variables.visualize:
+                    for event in pygame.event.get() :
+                        if event.type == pygame.QUIT :
+                            pygame.quit()
+                            quit()
                            
 
     def pil_image_to_pygame(self, pilImage):
