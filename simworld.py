@@ -17,7 +17,7 @@ class Node:
     def empty_the_node(self):
         self.is_empty = True
 class Board:
-    def __init__(self, form, size, empty_nodes):
+    def __init__(self, form, size, empty_nodes, visualize):
         self.form = form
         self.size = size
         self.empty_nodes = empty_nodes
@@ -25,7 +25,10 @@ class Board:
         self.state_t = None
         self.move_counter = 0
         self.populate_board()
-        self.graph = self.generate_graph()
+        self.graph = None
+        self.visualize = visualize
+        if self.visualize:
+            self.graph = self.generate_graph()
     
     def find_valid_neighbours(self,node):
         #find all possible neighbours using defined direction rules. Save thoose neighbours in the neighboard-list of the node as a tuple (direction, node)  
@@ -217,7 +220,7 @@ class Board:
         selected_node.is_selected = True
         offer = selected_node.neighbours[action[1]]
         offer.is_being_eaten = True
-        if variables.visualize:
+        if self.visualize:
             self.update_graph()
             frame_1 = self.show_board()
         empty_node = offer.neighbours[action[1]]
@@ -227,7 +230,7 @@ class Board:
         offer.is_being_eaten = False
         offer.is_empty= True
         self.update_state()
-        if variables.visualize:
+        if self.visualize:
             self.update_graph()
             frame_2 = self.show_board()
             return (frame_1, frame_2)

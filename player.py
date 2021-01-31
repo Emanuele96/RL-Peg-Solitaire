@@ -24,5 +24,7 @@ class Player:
             self.critic.update(self.states[-2], self.states[-1], self.actions[-2], self.actions[-1], self.rewards[-1] )
     
     def perform_action(self):
+        if variables.debug:
+            print("Selected action to perform " + str(self.actions[-1]))
         return self.actions[-1]
     

@@ -17,18 +17,26 @@ class Actor:
             if (state, action) not in self.policy:
                 self.policy[(state, action)] = 0
         #Get all SAP for the given state
-        relevant_policy = {k:v for k,v in self.policy.items() if k[0]==state}
-        
+        #relevant_policies = list(())#{k:v for k,v in self.policy.items() if k[0]==state}
+        max_policy_value = 0
+        max_policy = None
+        for SAP in self.policy.keys():
+            if SAP[0] == state:
+                #relevant_policies.append(SAP)
+                if self.policy[SAP] >= max_policy_value:
+                    max_policy_value = self.policy[SAP]
+                    max_policy = SAP
+
         if random.random() <= self.e_greedy:
             #Do a greedy choice
-            choosen_action = random.choice(list(relevant_policy.keys()))
+            choosen_action = random.choice(possible_actions)
         else:  
             #Retrieve the SAP with the highest value
-            choosen_action = max(relevant_policy, key=relevant_policy.get)
+            choosen_action = max_policy[1] #max(relevant_policy, key=relevant_policy.get)[1]
 
         #update eligibility for that SAP pair
-        self.SAP_eligibilities[choosen_action] = 1
-        return choosen_action[1]
+        self.SAP_eligibilities[(state,choosen_action)] = 1
+        return choosen_action
 
     def update(self, state_t, action_t, TD_error):
         #Get updated TD-error, update policy and eligibilities

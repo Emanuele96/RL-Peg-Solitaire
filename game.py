@@ -6,11 +6,11 @@ import pygame
 class Game:
         
     def __init__(self, actor, critic, visualize):
-        self.player = player.Player(actor, critic)
-        self.board = simworld.Board(variables.board_form, variables.board_size, variables.empty_nodes)
-        self.game_over = False
         self.visualize = visualize
-        
+        self.player = player.Player(actor, critic)
+        self.board = simworld.Board(variables.board_form, variables.board_size, variables.empty_nodes, visualize)
+        self.game_over = False
+
     def start_game(self):
         if self.visualize:
             pygame.init()
@@ -52,9 +52,14 @@ class Game:
                     for event in pygame.event.get() :
                         if event.type == pygame.QUIT :
                             pygame.quit()
-                            quit()
+                            return self.calculate_left_pegs()
+                            #quit()
+        return self.calculate_left_pegs()
                            
 
     def pil_image_to_pygame(self, pilImage):
         return pygame.image.fromstring(
             pilImage.tobytes(), pilImage.size, pilImage.mode).convert()
+        
+    def calculate_left_pegs(self):
+        return len(self.board.state_t.replace('0',''))

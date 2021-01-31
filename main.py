@@ -2,12 +2,14 @@ import game
 import actor
 import critic
 import variables
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":  
     #initializate variables
     actor_module = actor.Actor()
     critic_module = critic.Critic(actor_module)
-    
+    left_pegs_list = list(())
+    episode_number = list(())
 
     #start a game, an episode
     for i in range(variables.episodes):
@@ -19,4 +21,12 @@ if __name__ == "__main__":
         actor_module.reset_eligibility()
         episode = game.Game(actor_module, critic_module, visualize)
         print("Start game nr " + str(i + 1))
-        episode.start_game()
+        left_pegs = episode.start_game()
+        episode_number.append(i)
+        left_pegs_list.append(left_pegs)
+
+    plt.plot(episode_number, left_pegs_list) 
+    plt.xlabel('Episode nr') 
+    plt.ylabel('Left pegs') 
+    plt.title('Stats') 
+    plt.show() 

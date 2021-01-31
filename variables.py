@@ -2,19 +2,19 @@ debug = False
 
 # Board variables
 empty_nodes = [(0,0)]
-board_form = "diamond"
-board_size = 6
+board_form = "triangle"
+board_size = 5
 
 #system variables
 learning = True
 steps = 50 #steps per episodes
-episodes = 50
+episodes = 3000
 visualize = True
-frame_delay = 400
+frame_delay = 0
 
 
 # Actor variables
-e_actor = 1
+e_actor =0.1
 lr_actor = 0.9
 eligibility_decay_actor = 0.99
 discount_actor = 0.9
