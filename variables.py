@@ -9,6 +9,7 @@ board_size = 8
 learning = True
 number_of_moves = 50
 visualize = True
+frame_delay = 1000
 
 
 # Actor variables

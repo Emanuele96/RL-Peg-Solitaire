@@ -153,9 +153,10 @@ class Board:
         font = ImageFont.truetype('arial.ttf', 30)
         draw = ImageDraw.Draw(img)
         draw.text((0, 0),"Move nr. " + str(self.move_counter), (0,0,0), font=font)
-        img.show()
+        #img.show()
+        #img.save("frame.png")
+        return img
         
-
     def matplotlib_to_pil(self, fig):
         #Convert a Matplotlib object to an PIL Image   
         bufffer = io.BytesIO()
@@ -217,6 +218,7 @@ class Board:
 
     def update(self, action):
         #Apply the action to the board and change interested nodes propriety such that it can be visualized 
+        #return a tuple of img frames with the first being the selected action and second the new board state
         self.move_counter = self.move_counter + 1
         selected_node = action[0]
         selected_node.is_selected = True
@@ -224,7 +226,7 @@ class Board:
         offer.is_being_eaten = True
         if variables.visualize:
             self.update_graph()
-            self.show_board()
+            frame_1 = self.show_board()
         empty_node = offer.neighbours[action[1]]
         empty_node.is_empty = False
         selected_node.is_selected = False
@@ -232,9 +234,10 @@ class Board:
         offer.is_being_eaten = False
         offer.is_empty= True
         self.update_state()
-        self.update_graph()
-        self.show_board()
-
+        if variables.visualize:
+            self.update_graph()
+            frame_2 = self.show_board()
+        return (frame_1, frame_2)
 '''
 if variables.debug:
     print(board.pawns)
