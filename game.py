@@ -5,13 +5,14 @@ import pygame
 
 class Game:
         
-    def __init__(self, actor, critic):
+    def __init__(self, actor, critic, visualize):
         self.player = player.Player(actor, critic)
         self.board = simworld.Board(variables.board_form, variables.board_size, variables.empty_nodes)
         self.game_over = False
-
+        self.visualize = visualize
+        
     def start_game(self):
-        if variables.visualize:
+        if self.visualize:
             pygame.init()
             #white = (255, 255, 255) 
             #Show start board, generate an img, get the size and initializate a pygame display
@@ -24,8 +25,8 @@ class Game:
             pygame.display.update() 
             pygame.time.delay(variables.frame_delay)
 
-        while (not self.game_over) or variables.visualize:
-            for i in range(variables.number_of_moves):
+        while (not self.game_over) or self.visualize:
+            for i in range(variables.steps):
                 if not self.game_over:
                     #update the player with the state the board is in, eventual rewards and list of possible actions
                     all_legal_actions = self.board.find_all_legal_actions()
@@ -36,7 +37,7 @@ class Game:
                     self.player.update(self.board.state_t, self.board.get_reward(), all_legal_actions)
                     #perform an action choose by the player to the board
                     new_frames = self.board.update(self.player.perform_action())
-                if variables.visualize and not self.game_over:
+                if self.visualize and not self.game_over:
                     # Update the pygame display with the new frames
                     frame_1 = self.pil_image_to_pygame(new_frames[0])
                     frame_2 = self.pil_image_to_pygame(new_frames[1])
@@ -47,7 +48,7 @@ class Game:
                     display_surface.blit(frame_2, (0, 0)) 
                     pygame.display.update() 
                     pygame.time.delay(variables.frame_delay)
-                if variables.visualize:
+                if self.visualize:
                     for event in pygame.event.get() :
                         if event.type == pygame.QUIT :
                             pygame.quit()
