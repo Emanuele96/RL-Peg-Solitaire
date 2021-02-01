@@ -60,4 +60,4 @@ class Actor:
     def reset_eligibility(self):
         for SAP in self.SAP_eligibilities:
             self.SAP_eligibilities[SAP] = 0
-        self.e_greedy = self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes)*2
+        self.e_greedy = self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes)

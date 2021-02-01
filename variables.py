@@ -8,7 +8,7 @@ board_size = 5
 #system variables
 learning = True
 #steps = 50 #steps per episodes
-episodes = 1000
+episodes = 3000
 visualize = True
 frame_delay = 400
 

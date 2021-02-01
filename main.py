@@ -3,6 +3,9 @@ import actor
 import critic
 import variables
 import matplotlib.pyplot as plt
+from progress.bar import IncrementalBar
+
+
 
 if __name__ == "__main__":  
     #initializate variables
@@ -11,6 +14,7 @@ if __name__ == "__main__":
     left_pegs_list = list(())
     episode_number = list(())
     game = game.Game(actor_module, critic_module, False)
+    bar = IncrementalBar('Trainig', max=variables.episodes)
     #start a game, an episode
     for i in range(variables.episodes):
         if i == variables.episodes - 1:
@@ -20,12 +24,13 @@ if __name__ == "__main__":
         critic_module.reset_eligibility()
         actor_module.reset_eligibility()
         
-        print("Start game nr " + str(i + 1))
+        #print("Start game nr " + str(i + 1))
         game.reset(visualize)
         left_pegs = game.start_game()
         episode_number.append(i)
         left_pegs_list.append(left_pegs)
-
+        bar.next()
+    bar.finish()
     plt.plot(episode_number, left_pegs_list) 
     plt.xlabel('Episode nr') 
     plt.ylabel('Left pegs') 
