@@ -7,11 +7,11 @@ board_size = 5
 
 #system variables
 learning = True
-episodes = 1000
+episodes = 50000
 visualize = True
 frame_delay = 400
-terminal_goal_state_reward = 1000
-terminal_state_penalty = -10
+terminal_goal_state_reward = 100
+terminal_state_penalty = 0
 non_terminal_state_reward = 0
 
 # Actor variables
@@ -26,4 +26,4 @@ discount_actor = 0.9
 discount_critic = 0.9
 lr_critic = 1
 eligibility_decay_critic = 0.88
-initialize_values_range_critic = 10
+initialize_values_range_critic = 5
