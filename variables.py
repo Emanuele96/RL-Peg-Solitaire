@@ -7,21 +7,22 @@ board_size = 5
 
 #system variables
 learning = True
-steps = 50 #steps per episodes
-episodes = 2000
+#steps = 50 #steps per episodes
+episodes = 1000
 visualize = True
 frame_delay = 400
 
 
 # Actor variables
-e_actor =0.5
-e_decay = 0.002
-lr_actor = 1.12
-eligibility_decay_actor = 0.99
-discount_actor = 0.98
+e_actor_start =0.6
+e_actor_stop = 0.001
+lr_actor = 1.2
+eligibility_decay_actor = 0.9
+discount_actor = 0.9
 
 # Critic variables
 discount_critic = 0.98
 lr_critic = 1.2
 eligibility_decay_critic = 0.9
 initialize_values_range_critic = 2
+

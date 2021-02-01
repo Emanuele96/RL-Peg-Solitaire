@@ -28,34 +28,32 @@ class Game:
             pygame.time.delay(variables.frame_delay)
 
         while (not self.game_over) or self.visualize:
-            for i in range(variables.steps):
-                if not self.game_over:
-                    #update the player with the state the board is in, eventual rewards and list of possible actions
-                    all_legal_actions = self.board.find_all_legal_actions()
-                    if len(all_legal_actions) == 0:
-                        #print("Game Over after " + str(self.board.move_counter) + " moves")
-                        self.game_over = True
-                        #break
-                    self.player.update(self.board.state_t, self.board.get_reward(self.game_over), all_legal_actions, self.game_over)
-                    #perform an action choose by the player to the board
-                    new_frames = self.board.update(self.player.perform_action())
-                if self.visualize and not self.game_over:
-                    # Update the pygame display with the new frames
-                    frame_1 = self.pil_image_to_pygame(new_frames[0])
-                    frame_2 = self.pil_image_to_pygame(new_frames[1])
-                    #display_surface.fill(white)
-                    display_surface.blit(frame_1, (0, 0)) 
-                    pygame.display.update() 
-                    pygame.time.delay(variables.frame_delay)
-                    display_surface.blit(frame_2, (0, 0)) 
-                    pygame.display.update() 
-                    pygame.time.delay(variables.frame_delay)
-                if self.visualize:
-                    for event in pygame.event.get() :
-                        if event.type == pygame.QUIT :
-                            pygame.quit()
-                            return self.calculate_left_pegs()
-                            #quit()
+            #update the player with the state the board is in, eventual rewards and list of possible actions
+            all_legal_actions = self.board.find_all_legal_actions()
+            if len(all_legal_actions) == 0:
+                #print("Game Over after " + str(self.board.move_counter) + " moves")
+                self.game_over = True
+                #break
+            self.player.update(self.board.state_t, self.board.get_reward(self.game_over), all_legal_actions, self.game_over)
+            #perform an action choose by the player to the board
+            new_frames = self.board.update(self.player.perform_action())
+            if self.visualize and not self.game_over:
+                # Update the pygame display with the new frames
+                frame_1 = self.pil_image_to_pygame(new_frames[0])
+                frame_2 = self.pil_image_to_pygame(new_frames[1])
+                #display_surface.fill(white)
+                display_surface.blit(frame_1, (0, 0)) 
+                pygame.display.update() 
+                pygame.time.delay(variables.frame_delay)
+                display_surface.blit(frame_2, (0, 0)) 
+                pygame.display.update() 
+                pygame.time.delay(variables.frame_delay)
+            if self.visualize:
+                for event in pygame.event.get() :
+                    if event.type == pygame.QUIT :
+                        pygame.quit()
+                        return self.calculate_left_pegs()
+                        #quit()
         return self.calculate_left_pegs()
                            
 

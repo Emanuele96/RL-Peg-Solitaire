@@ -9,7 +9,7 @@ class Critic:
         self.lr = variables.lr_critic
         self.e_decay = variables.eligibility_decay_critic
 
-    def update(self, state_t, state_t1, action_t, action_t1, reward_t1):
+    def update(self, state_t, state_t1, action_t, reward_t1):
         #Calculate TD error
         TD_error = self.calculate_TD_error(reward_t1, state_t, state_t1)
         #Send TD error to actor, trigger actor update routine
@@ -22,9 +22,10 @@ class Critic:
             #update eligibility for each state 
             self.state_eligibility[state] = self.discount_factor * self.e_decay * self.state_eligibility[state]
             self.state_eligibility[state_t] = 1
-            
+
     def reset_eligibility(self):
-        self.state_eligibility = {}
+        for state in self.state_eligibility:
+            self.state_eligibility[state] = 0
 
     #fill a list of all permutation of a binary number of length n. Used to generate all possible states of the board.
     def generate_all_binary_states(self, n, result, bs = ''):

@@ -7,12 +7,10 @@ class Actor:
     def __init__(self):
         self.policy = {}
         self.SAP_eligibilities = {}
-        self.e_greedy = variables.e_actor
+        self.e_greedy = variables.e_actor_start
         self.lr = variables.lr_actor
         self.eligibility_decay = variables.eligibility_decay_actor
         self.discount = variables.discount_actor
-        self.counter = 0
-        self.e_decay = variables.e_decay
         
     def get_action(self, state, possible_actions):
         # add a new key in the policy dict with value 0, if not SAP existent from before
@@ -32,13 +30,12 @@ class Actor:
                     max_policy_value = self.policy[SAP]
                     max_policy = SAP
 
-        if random.random() <= self.e_greedy - self.counter * self.e_decay:
+        if random.random() <= self.e_greedy:
             #Do a greedy choice
             choosen_action = random.choice(possible_actions)
         else:  
             #Retrieve the SAP with the highest value
             choosen_action = max_policy[1] #max(relevant_policy, key=relevant_policy.get)[1]
-
         #update eligibility for that SAP pair
         self.SAP_eligibilities[(state,choosen_action)] = 1
         return choosen_action
@@ -63,4 +60,4 @@ class Actor:
     def reset_eligibility(self):
         for SAP in self.SAP_eligibilities:
             self.SAP_eligibilities[SAP] = 0
-            self.counter = self.counter + 1
+        self.e_greedy = self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes)*2
