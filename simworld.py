@@ -45,6 +45,9 @@ class Board:
         if self.visualize:
             self.graph = self.generate_graph()
     
+    def get_state(self):
+        return self.state_t
+    
     def find_valid_neighbours(self,node):
         #find all possible neighbours using defined direction rules. Save thoose neighbours in the neighboard-list of the node as a tuple (direction, node)  
         if variables.debug:
@@ -198,8 +201,6 @@ class Board:
         #Analize the board and check all possible actions. Iterate trough all the nodes and for each neighboard, 
         # check if with the move that needs to take from node-->neighboard, it comes to neighboard-->adj_to_neighboard
         # and this is an empty node. 
-        if(variables.debug):
-            print("Move nr. " + str(self.move_counter))
         all_actions = list(())
         for node in self.pawns.values():
             if node.is_empty:
@@ -212,8 +213,7 @@ class Board:
                 if move in neighbour.neighbours.keys():
                     if neighbour.neighbours[move].is_empty:
                         all_actions.append((node, move))
-                        if(variables.debug):
-                            print('from: ' + str(node.coordinates) + ' move: ' + str(move) + ' eat: ' + str(neighbour.coordinates) + 'because ' +  str(neighbour.neighbours[move].coordinates) + " is empty " + str(neighbour.neighbours[move].is_empty) + '\n')
+
                                 
         if variables.debug:
             print("all legal actions: " + str(len(all_actions)))
@@ -223,12 +223,11 @@ class Board:
                     
     def get_reward(self, game_over):
         #return reward for being in state self.state_t at time t
-        
-        if game_over:
-            return -5 * len(self.state_t.replace('0',''))
-        if int(self.state_t.replace('0',''), base=2) == 1:
-            return 10 * len(self.state_t)
-        return 0 
+        if game_over and int(self.state_t.replace('0','')) == 1:
+            return variables.terminal_goal_state_reward 
+        elif game_over:
+            return variables.terminal_state_penalty
+        return variables.non_terminal_state_reward
 
     def update(self, action):
         #Apply the action to the board and change interested nodes propriety such that it can be visualized 

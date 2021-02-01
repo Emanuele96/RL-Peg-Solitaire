@@ -11,12 +11,14 @@ class Game:
         self.board = simworld.Board(variables.board_form, variables.board_size, variables.empty_nodes, visualize)
         self.game_over = False
 
-    def start_game(self):
+    def start_game(self, visualize, train):
         #Begin a new episode
-        self.game_over = False
+        self.reset(visualize)
+        state_t = self.board.get_state()
+        all_legal_actions_t = self.board.find_all_legal_actions()
+        action_t = self.player.get_action(state_t, all_legal_actions_t) 
         if self.visualize:
             pygame.init()
-            #white = (255, 255, 255) 
             #Show start board, generate an img, get the size and initializate a pygame display
             img = self.board.show_board()
             X, Y = img.size
@@ -26,29 +28,36 @@ class Game:
             display_surface.blit(frame, (0, 0)) 
             pygame.display.update() 
             pygame.time.delay(variables.frame_delay)
+            last_pil_frames = None
 
         while (not self.game_over) or self.visualize:
-            #update the player with the state the board is in, eventual rewards and list of possible actions
-            all_legal_actions = self.board.find_all_legal_actions()
-            if len(all_legal_actions) == 0:
-                #print("Game Over after " + str(self.board.move_counter) + " moves")
-                self.game_over = True
-                #break
-            self.player.update(self.board.state_t, self.board.get_reward(self.game_over), all_legal_actions, self.game_over)
-            #perform an action choose by the player to the board
-            new_frames = self.board.update(self.player.perform_action())
-            if self.visualize and not self.game_over:
-                # Update the pygame display with the new frames
-                frame_1 = self.pil_image_to_pygame(new_frames[0])
-                frame_2 = self.pil_image_to_pygame(new_frames[1])
-                #display_surface.fill(white)
-                display_surface.blit(frame_1, (0, 0)) 
-                pygame.display.update() 
-                pygame.time.delay(variables.frame_delay)
-                display_surface.blit(frame_2, (0, 0)) 
-                pygame.display.update() 
-                pygame.time.delay(variables.frame_delay)
+            if not self.game_over:
+                new_pil_frames = self.board.update(action_t)
+                state_t1 = self.board.get_state()
+                all_legal_actions_t1 = self.board.find_all_legal_actions()
+                if len(all_legal_actions_t1) > 0:
+                    action_t1 = self.player.get_action(state_t1, all_legal_actions_t1)
+                else:
+                    action_t1 = None
+                    self.game_over = True
+                reward_t1 = self.board.get_reward(self.game_over)
+                #update the player with the state the board is in, eventual rewards and list of possible actions
+                self.player.update(state_t, state_t1, action_t, reward_t1, train)
+                state_t = state_t1
+                action_t = action_t1
+
             if self.visualize:
+                #Performe the routine for visualization
+                if new_pil_frames != last_pil_frames:
+                    new_frames = (self.pil_image_to_pygame(new_pil_frames[0]) ,  self.pil_image_to_pygame(new_pil_frames[1]) )
+                    last_pil_frames = new_pil_frames
+                    # Update the pygame display with the new frames
+                    display_surface.blit(new_frames[0], (0, 0)) 
+                    pygame.display.update() 
+                    pygame.time.wait(variables.frame_delay)
+                    display_surface.blit(new_frames[1], (0, 0)) 
+                    pygame.display.update() 
+                    pygame.time.wait(variables.frame_delay)
                 for event in pygame.event.get() :
                     if event.type == pygame.QUIT :
                         pygame.quit()
@@ -68,3 +77,4 @@ class Game:
         self.visualize = visualize
         self.board.reset(visualize)
         self.player.reset()
+        self.game_over = False

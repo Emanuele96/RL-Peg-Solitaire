@@ -21,12 +21,10 @@ if __name__ == "__main__":
             visualize = True
         else: 
             visualize = False
-        critic_module.reset_eligibility()
-        actor_module.reset_eligibility()
+        critic_module.reset()
+        actor_module.reset()
         
-        #print("Start game nr " + str(i + 1))
-        game.reset(visualize)
-        left_pegs = game.start_game()
+        left_pegs = game.start_game(visualize, train=True)
         episode_number.append(i)
         left_pegs_list.append(left_pegs)
         bar.next()
