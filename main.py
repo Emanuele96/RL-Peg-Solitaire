@@ -10,7 +10,7 @@ if __name__ == "__main__":
     critic_module = critic.Critic(actor_module)
     left_pegs_list = list(())
     episode_number = list(())
-
+    game = game.Game(actor_module, critic_module, False)
     #start a game, an episode
     for i in range(variables.episodes):
         if i == variables.episodes - 1:
@@ -19,9 +19,10 @@ if __name__ == "__main__":
             visualize = False
         critic_module.reset_eligibility()
         actor_module.reset_eligibility()
-        episode = game.Game(actor_module, critic_module, visualize)
+        
         print("Start game nr " + str(i + 1))
-        left_pegs = episode.start_game()
+        game.reset(visualize)
+        left_pegs = game.start_game()
         episode_number.append(i)
         left_pegs_list.append(left_pegs)
 

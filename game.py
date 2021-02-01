@@ -12,6 +12,8 @@ class Game:
         self.game_over = False
 
     def start_game(self):
+        #Begin a new episode
+        self.game_over = False
         if self.visualize:
             pygame.init()
             #white = (255, 255, 255) 
@@ -31,10 +33,10 @@ class Game:
                     #update the player with the state the board is in, eventual rewards and list of possible actions
                     all_legal_actions = self.board.find_all_legal_actions()
                     if len(all_legal_actions) == 0:
-                        print("Game Over after " + str(self.board.move_counter) + " moves")
+                        #print("Game Over after " + str(self.board.move_counter) + " moves")
                         self.game_over = True
-                        break
-                    self.player.update(self.board.state_t, self.board.get_reward(), all_legal_actions)
+                        #break
+                    self.player.update(self.board.state_t, self.board.get_reward(self.game_over), all_legal_actions, self.game_over)
                     #perform an action choose by the player to the board
                     new_frames = self.board.update(self.player.perform_action())
                 if self.visualize and not self.game_over:
@@ -63,3 +65,8 @@ class Game:
         
     def calculate_left_pegs(self):
         return len(self.board.state_t.replace('0',''))
+
+    def reset(self, visualize):
+        self.visualize = visualize
+        self.board.reset(visualize)
+        self.player.reset()

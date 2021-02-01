@@ -29,6 +29,21 @@ class Board:
         self.visualize = visualize
         if self.visualize:
             self.graph = self.generate_graph()
+
+    def reset(self, visualize):
+        #Reset the board
+        self.visualize = visualize
+        self.move_counter = 0
+        for node in self.pawns.values():
+            if node.coordinates in self.empty_nodes:
+                node.is_empty = True
+            else:
+                node.is_empty = False
+            node.is_being_eaten = False
+            node.is_selected = False
+        self.update_state()
+        if self.visualize:
+            self.graph = self.generate_graph()
     
     def find_valid_neighbours(self,node):
         #find all possible neighbours using defined direction rules. Save thoose neighbours in the neighboard-list of the node as a tuple (direction, node)  
@@ -206,8 +221,11 @@ class Board:
                 print(str(action[0].coordinates) + "   " + str(action[1]) )
         return all_actions
                     
-    def get_reward(self):
+    def get_reward(self, game_over):
         #return reward for being in state self.state_t at time t
+        
+        if game_over:
+            return -10
         if int(self.state_t.replace('0',''), base=2) == 1:
             return 10
         return 0 
@@ -235,12 +253,3 @@ class Board:
             frame_2 = self.show_board()
             return (frame_1, frame_2)
         return None
-'''
-if variables.debug:
-    print(board.pawns)
-    for key in board.pawns:
-        for neighbour in board.pawns[key].neighbours:
-            print(str(key) + " : " + str(neighbour[1].coordinates))
-            print(neighbour)
-    print(board.pawns[(1,0)].neighbours)
-'''

@@ -1,5 +1,6 @@
 import variables
 import random
+import math
 
 class Actor:
 
@@ -10,15 +11,19 @@ class Actor:
         self.lr = variables.lr_actor
         self.eligibility_decay = variables.eligibility_decay_actor
         self.discount = variables.discount_actor
-
+        self.counter = 0
+        self.e_decay = variables.e_decay
+        
     def get_action(self, state, possible_actions):
         # add a new key in the policy dict with value 0, if not SAP existent from before
         for action in possible_actions:
             if (state, action) not in self.policy:
                 self.policy[(state, action)] = 0
+            if (state, action) not in self.SAP_eligibilities:
+                self.SAP_eligibilities[(state, action)] = 0
         #Get all SAP for the given state
         #relevant_policies = list(())#{k:v for k,v in self.policy.items() if k[0]==state}
-        max_policy_value = 0
+        max_policy_value = -math.inf
         max_policy = None
         for SAP in self.policy.keys():
             if SAP[0] == state:
@@ -27,7 +32,7 @@ class Actor:
                     max_policy_value = self.policy[SAP]
                     max_policy = SAP
 
-        if random.random() <= self.e_greedy:
+        if random.random() <= self.e_greedy - self.counter * self.e_decay:
             #Do a greedy choice
             choosen_action = random.choice(possible_actions)
         else:  
@@ -42,17 +47,20 @@ class Actor:
         #Get updated TD-error, update policy and eligibilities
 
         #dinamically initializate new values
-        if (state_t, action_t) not in self.policy.keys():
+        '''if (state_t, action_t) not in self.policy.keys():
             self.policy[(state_t, action_t)] = 0
+        if (state_t, action_t) not in self.SAP_eligibilities.keys():
+            self.SAP_eligibilities[(state_t, action_t)] = 0
+        '''
 
         for SAP in self.policy.keys():
-            if SAP not in self.SAP_eligibilities.keys():
-                self.SAP_eligibilities[SAP] = 0
             self.policy[SAP] =  self.policy[SAP] + self.lr * TD_error * self.SAP_eligibilities[SAP]
-        for SAP_eligibility in self.SAP_eligibilities:
-            self.SAP_eligibilities[SAP_eligibility] = self.eligibility_decay * self.discount * self.SAP_eligibilities[SAP_eligibility]
+        for SAP in self.SAP_eligibilities:
+            self.SAP_eligibilities[SAP] = self.eligibility_decay * self.discount * self.SAP_eligibilities[SAP]
         ## Set eligibility last state action pair to be 1
         self.SAP_eligibilities[(state_t, action_t)] = 1
-
+        
     def reset_eligibility(self):
-        self.SAP_eligibilities = {}
+        for SAP in self.SAP_eligibilities:
+            self.SAP_eligibilities[SAP] = 0
+            self.counter = self.counter + 1
