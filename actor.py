@@ -58,6 +58,8 @@ class Actor:
         self.SAP_eligibilities[(state_t, action_t)] = 1
         
     def reset_eligibility(self):
+        print(len(self.SAP_eligibilities))
+        print(len(self.policy))
         for SAP in self.SAP_eligibilities:
             self.SAP_eligibilities[SAP] = 0
         self.e_greedy = self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes)

@@ -225,7 +225,7 @@ class Board:
         #return reward for being in state self.state_t at time t
         
         if game_over:
-            return -1 * len(self.state_t.replace('0',''))
+            return -5 * len(self.state_t.replace('0',''))
         if int(self.state_t.replace('0',''), base=2) == 1:
             return 100
         return 0 

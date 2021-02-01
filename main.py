@@ -14,7 +14,7 @@ if __name__ == "__main__":
     left_pegs_list = list(())
     episode_number = list(())
     game = game.Game(actor_module, critic_module, False)
-    bar = IncrementalBar('Trainig', max=variables.episodes)
+    bar = IncrementalBar('Training', max=variables.episodes)
     #start a game, an episode
     for i in range(variables.episodes):
         if i == variables.episodes - 1:
