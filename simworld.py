@@ -227,7 +227,7 @@ class Board:
         if game_over:
             return -5 * len(self.state_t.replace('0',''))
         if int(self.state_t.replace('0',''), base=2) == 1:
-            return 100
+            return 10 * len(self.state_t)
         return 0 
 
     def update(self, action):
