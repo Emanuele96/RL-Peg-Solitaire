@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     color = 'tab:red'
     ax2 = ax1.twinx()  
-    ax2.set_ylabel(' (sigma)', color='red')  
+    ax2.set_ylabel('sigma', color='red')  
     ax2.plot(episode_number, e_greedy_list, color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 

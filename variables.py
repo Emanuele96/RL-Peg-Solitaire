@@ -2,12 +2,12 @@ debug = False
 
 # Board variables: Diamond (3-6) and Triangle (4-8)
 empty_nodes = [(2,2)]
-board_form = "diamond"
-board_size = 6
+board_form = "triangle"
+board_size = 4
 
 #system variables
 learning = True
-episodes = 10000
+episodes = 1000
 visualize = True
 frame_delay = 100
 terminal_goal_state_reward = 10000
@@ -21,6 +21,8 @@ e_decay = 0.995
 lr_actor = 1
 eligibility_decay_actor = 0.95
 discount_actor = 0.95
+decay_function = "variable_decay"
+total_greedy_percent = 0.05
 
 # Critic variables
 discount_critic = 0.95
