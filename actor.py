@@ -63,4 +63,4 @@ class Actor:
         self.SAPs_in_episode.clear()
         self.SAP_eligibilities.clear()
         #self.e_greedy = max(self.e_greedy * variables.e_decay, 0)
-        self.e_greedy =  max(self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop) *1.1/ variables.episodes),0)
+        self.e_greedy =  max(self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)*1.1/ variables.episodes),0)

@@ -2,8 +2,8 @@ debug = False
 
 # Board variables: Diamond (3-6) and Triangle (4-8)
 empty_nodes = [(2,2)]
-board_form = "triangle"
-board_size = 8
+board_form = "diamond"
+board_size = 6
 
 #system variables
 learning = True

@@ -53,6 +53,4 @@ class Critic:
         return reward_t1 + self.discount_factor * value_state_t1 - value_state_t
 
     def update_value_table(self, state_t, TD_error):
-        #if state_t not in self.state_eligibility:
-        #    self.state_eligibility[state_t] = 0
         self.state_values[state_t] = self.state_values[state_t] + self.lr * TD_error * self.state_eligibility[state_t]
