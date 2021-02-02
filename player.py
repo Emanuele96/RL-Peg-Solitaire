@@ -1,13 +1,7 @@
 import variables
 
 class Player:
-    def __init__(self, actor, critic):
-        #state at time t
-        self.states = list(())
-        #received reward at time t
-        self.rewards = list(())
-        #a list (ordered) containing all performed actions pairs
-        self.actions = list(())
+    def __init__(self, actor, critic):       
         self.learning = variables.learning
         self.actor = actor
         self.critic = critic
@@ -28,14 +22,7 @@ class Player:
          ##   self.actions.append(new_action)
          
     def get_action(self, state, possible_actions):
-        if variables.debug:
-            print("Selected action to perform " + str(self.actions[-1]))
-        return self.actor.get_action(state, possible_actions) #self.actions[-1]
+        return self.actor.get_action(state, possible_actions) 
 
-    
-    
-    def reset(self):
-        self.states = list(())
-        self.rewards = list(())
-        self.actions = list(())
+
 

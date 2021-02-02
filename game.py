@@ -76,5 +76,4 @@ class Game:
     def reset(self, visualize):
         self.visualize = visualize
         self.board.reset(visualize)
-        self.player.reset()
         self.game_over = False

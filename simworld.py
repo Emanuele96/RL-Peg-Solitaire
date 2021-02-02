@@ -210,7 +210,7 @@ class Board:
                 neighbour = neighbour_object[1]
                 if neighbour.is_empty:
                     continue
-                if move in neighbour.neighbours.keys():
+                if move in neighbour.neighbours:
                     if neighbour.neighbours[move].is_empty:
                         all_actions.append((node, move))
 
@@ -232,20 +232,20 @@ class Board:
     def update(self, action):
         #Apply the action to the board and change interested nodes propriety such that it can be visualized 
         #return a tuple of img frames with the first being the selected action and second the new board state
-        self.move_counter = self.move_counter + 1
         selected_node = action[0]
-        selected_node.is_selected = True
         offer = selected_node.neighbours[action[1]]
-        offer.is_being_eaten = True
+        empty_node = offer.neighbours[action[1]]
         if self.visualize:
+            self.move_counter = self.move_counter + 1
+            selected_node.is_selected = True
+            offer.is_being_eaten = True
             self.update_graph()
             frame_1 = self.show_board()
-        empty_node = offer.neighbours[action[1]]
-        empty_node.is_empty = False
-        selected_node.is_selected = False
+            selected_node.is_selected = False
+            offer.is_being_eaten = False
         selected_node.is_empty = True
-        offer.is_being_eaten = False
         offer.is_empty= True
+        empty_node.is_empty = False
         self.update_state()
         if self.visualize:
             self.update_graph()
