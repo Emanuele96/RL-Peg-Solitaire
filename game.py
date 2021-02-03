@@ -19,6 +19,8 @@ class Game:
         action_t = self.player.get_action(state_t, all_legal_actions_t) 
         if self.visualize:
             pygame.init()
+            effect_step = pygame.mixer.Sound('step.wav')
+            effect_win = pygame.mixer.Sound('win.wav')
             #Show start board, generate an img, get the size and initializate a pygame display
             img = self.board.show_board()
             X, Y = img.size
@@ -57,12 +59,15 @@ class Game:
                     pygame.time.wait(variables.frame_delay)
                     display_surface.blit(new_frames[1], (0, 0)) 
                     pygame.display.update() 
+                    effect_step.play()
                     pygame.time.wait(variables.frame_delay)
+                    effect_step.stop()
                 for event in pygame.event.get() :
                     if event.type == pygame.QUIT :
                         pygame.quit()
                         return self.calculate_left_pegs()
                         #quit()
+                
         return self.calculate_left_pegs()
                            
 

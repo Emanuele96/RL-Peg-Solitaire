@@ -66,11 +66,13 @@ class Actor:
         #self.e_greedy = max(self.e_greedy * variables.e_decay, 0)
         #self.e_greedy =  max(self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)*1.1/ variables.episodes),0)
         self.e_decay()
-        
+
     def e_decay(self):
-        if variables.decay_function == "variable_decay":
+        if self.counter >= variables.episodes - variables.episodes * variables.total_greedy_percent:
+            self.e_greedy = 0
+        elif variables.decay_function == "variable_decay":
             n_steps = variables.episodes
             decay_step = 4/n_steps
             self.e_greedy = max(pow(1-decay_step, self.counter),0)
         elif variables.decay_function == "linear":
-            self.e_greedy = max(self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes)*(1+ variables.total_greedy_percent),0)
+            self.e_greedy = max(self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes),0)

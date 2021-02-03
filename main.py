@@ -33,7 +33,7 @@ if __name__ == "__main__":
     bar.finish()
 
     color = 'tab:blue'
-    fig, ax1 = plt.subplots()
+    figure, ax1 = plt.subplots()
     ax1.set_xlabel('Episode nr')
     ax1.set_ylabel('Left pegs', color='blue')
     ax1.plot(episode_number, left_pegs_list, color=color)
@@ -45,5 +45,5 @@ if __name__ == "__main__":
     ax2.plot(episode_number, e_greedy_list, color=color)
     ax2.tick_params(axis='y', labelcolor=color)
 
-    fig.tight_layout()
+    figure.tight_layout()
     plt.show()
