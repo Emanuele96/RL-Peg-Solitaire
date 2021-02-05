@@ -9,6 +9,7 @@ class Critic:
         self.lr = variables.lr_critic
         self.e_decay = variables.eligibility_decay_critic
         self.states_in_episode = list(())
+        random.seed(variables.random_seed_critic)
 
     def update(self, state_t, state_t1, action_t, reward_t1):
         #append the state in the list of states in this episode

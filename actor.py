@@ -11,6 +11,7 @@ class Actor:
         self.discount = variables.discount_actor
         self.SAPs_in_episode = list(())
         self.counter = 0 
+        random.seed(variables.random_seed_actor)
 
     def get_action(self, state, possible_actions):
       
@@ -28,13 +29,6 @@ class Actor:
                 if  policy_value > max_policy_value:
                     choosen_action = action
                     max_policy_value = policy_value
-            '''choosen_action =  max(relevant_policies, key=relevant_policies.get)[1] 
-            if relevant_policies[(state,choosen_action)] < 0 and len(relevant_policies) < len(possible_actions):
-                choosen_action = random.choice(possible_actions)
-                print("random action")
-
-            else:
-            ''' 
 
         # add a new key in the policy dict with value 0, if not  SAP existent from before
         #if (state, choosen_action) not in self.policy:
