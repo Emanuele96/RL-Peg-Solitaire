@@ -33,5 +33,5 @@ discount_critic = 0.95
 lr_critic_table = 1
 eligibility_decay_critic = 0.95
 initialize_values_range_critic = 2
-nn_layers =  [15, 20, 30, 5, 1]
-lr_critic_function = 5*10e-6
+nn_layers =  [15, 5, 1]
+lr_critic_function = 5*10e-4
