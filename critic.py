@@ -12,22 +12,22 @@ class Critic:
         self.steps = list(())
         self.step_count = 0
         self.actor = actor
+        self.discount_factor = variables.discount_critic
+        self.e_decay = variables.eligibility_decay_critic
         self.type = variables.state_value_source
         random.seed(variables.random_seed_critic)
 
         if  self.type == "table":
             self.state_values = {}
             self.state_eligibility = {}
-            self.discount_factor = variables.discount_critic_table
             self.lr = variables.lr_critic_table
-            self.e_decay = variables.eligibility_decay_critic
             self.states_in_episode = list(())
 
         elif self.type == "function":
             self.lr = variables.lr_critic_function
-            self.discount_factor = variables.discount_critic_function
-            if torch.cuda.is_available():
-                self.device = "cpu"
+            self.use_cuda = False
+            if self.use_cuda and torch.cuda.is_available():
+                self.device = "cuda:0"
             else:
                 self.device = "cpu"
             self.nn_layers = variables.nn_layers
@@ -37,15 +37,16 @@ class Critic:
                 self.input_size = 0
                 for i in range(1,variables.board_size + 1):
                     self.input_size += i
-            self.model = ann_model.Net(self.input_size,self.nn_layers)
+            self.model = ann_model.Net(self.input_size,self.nn_layers, self.use_cuda)
             self.optimizer =  optim.SGD(self.model.parameters(), lr=self.lr)
             self.loss = nn.MSELoss(reduction="mean")
+            self.eligibilities = list(())
+            self.initial_eligibilities = list(())
+            #initialize eligibilities for each weight and biases
+            for param in self.model.parameters():
+                self.initial_eligibilities.append(torch.zeros(param.shape).to(self.device))
+            self.eligibilities = self.initial_eligibilities.copy()
 
-            '''print(self.model)
-            for name, param in self.model.named_parameters():
-                if param.requires_grad:
-                    print (name, param.data)
-            '''
 
     def update(self, state_t, state_t1, action_t, reward_t1):
         if self.type == "table":
@@ -72,14 +73,22 @@ class Critic:
             #Calculate TD error
             TD_error = self.calculate_TD_error(reward_t1, value_state_t, value_state_t1)
             #to delete
-            label = TD_error + value_state_t
-            loss = self.loss(value_state_t, label)
+            desidered_output = TD_error + value_state_t
+            loss = self.loss(value_state_t, desidered_output)
             self.losses.append(loss.item())
             self.step_count += 1
             self.steps.append(self.step_count)
+            #calculate gradients
             loss.backward()
-            self.optimizer.step()
-            self.optimizer.zero_grad()
+            #update gradients with regard of eligibility traces
+            with torch.no_grad():
+                count = 0
+                for param in self.model.parameters():
+                    updated_weight = self.update_gradients_with_eligibility(param, param.grad, count, TD_error)
+                    #Copy_ so that it is inplace operation, changing the value of the old param memory space, not pointing at new adress in memory
+                    param.copy_(updated_weight)
+                    count += 1
+
 
 
         #Send TD error to actor, trigger actor update routine
@@ -91,8 +100,18 @@ class Critic:
             self.states_in_episode.clear()
             self.state_eligibility.clear()
 
+        elif self.type == "function":
+            self.eligibilities = self.initial_eligibilities.copy()
+
     def calculate_TD_error(self, reward_t1, value_state_t, value_state_t1):
         return reward_t1 + self.discount_factor * value_state_t1 - value_state_t
 
     def update_value_table(self, state_t, TD_error):
         self.state_values[state_t] = self.state_values[state_t] + self.lr * TD_error * self.state_eligibility[state_t]
+
+    def update_gradients_with_eligibility(self, param, grad, eligibilities_index, TD_error):
+        value_state_partial_derivative = -1/(2*TD_error) * grad
+        #update the eligibilities for the weights
+        self.eligibilities[eligibilities_index] = self.eligibilities[eligibilities_index] * self.discount_factor * self.e_decay + value_state_partial_derivative
+        #Return the new gradiants for the weights
+        return param - self.lr * TD_error * self.eligibilities[eligibilities_index]

@@ -7,7 +7,7 @@ board_size = 6
 
 #system variables
 learning = True
-episodes = 10000
+episodes = 1000
 visualize = True
 frame_delay = 100
 terminal_goal_state_reward = 10
@@ -27,12 +27,11 @@ total_greedy_percent = 0.05
 
 # Critic variables
 #"table" or "function"
-state_value_source = "table"
+state_value_source = "function"
 random_seed_critic = 24
-discount_critic_table = 0.95
+discount_critic = 0.95
 lr_critic_table = 1
 eligibility_decay_critic = 0.95
 initialize_values_range_critic = 2
 nn_layers =  [15, 20, 30, 5, 1]
-discount_critic_function = 0.95
 lr_critic_function = 5*10e-6
