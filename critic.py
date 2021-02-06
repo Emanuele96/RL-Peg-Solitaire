@@ -72,7 +72,7 @@ class Critic:
             value_state_t1 = self.model(t1)
             #Calculate TD error
             TD_error = self.calculate_TD_error(reward_t1, value_state_t, value_state_t1)
-            #to delete
+            #calculate desidered value
             desidered_output = TD_error + value_state_t
             loss = self.loss(value_state_t, desidered_output)
             self.losses.append(loss.item())
@@ -88,9 +88,6 @@ class Critic:
                     #Copy_ so that it is inplace operation, changing the value of the old param memory space, not pointing at new adress in memory
                     param.copy_(updated_weight)
                     count += 1
-
-
-
         #Send TD error to actor, trigger actor update routine
         self.actor.update(state_t, action_t, TD_error)
 

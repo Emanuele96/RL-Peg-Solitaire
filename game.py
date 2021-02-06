@@ -20,7 +20,6 @@ class Game:
         if self.visualize:
             pygame.init()
             effect_step = pygame.mixer.Sound('step.wav')
-            effect_win = pygame.mixer.Sound('win.wav')
             #Show start board, generate an img, get the size and initializate a pygame display
             img = self.board.show_board()
             X, Y = img.size
@@ -66,8 +65,6 @@ class Game:
                     if event.type == pygame.QUIT :
                         pygame.quit()
                         return self.calculate_left_pegs()
-                        #quit()
-                
         return self.calculate_left_pegs()
                            
 

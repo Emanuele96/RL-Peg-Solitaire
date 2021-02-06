@@ -1,13 +1,13 @@
 debug = False
 
 # Board variables: Diamond (3-6) and Triangle (4-8)
-empty_nodes = [(0,0)]
+empty_nodes = [(2,1)]
 board_form = "triangle"
-board_size = 6
+board_size = 5
 
 #system variables
 learning = True
-episodes = 1000
+episodes = 20000
 visualize = True
 frame_delay = 100
 terminal_goal_state_reward = 10
@@ -27,7 +27,7 @@ total_greedy_percent = 0.05
 
 # Critic variables
 #"table" or "function"
-state_value_source = "function"
+state_value_source = "table"
 random_seed_critic = 24
 discount_critic = 0.95
 lr_critic_table = 1

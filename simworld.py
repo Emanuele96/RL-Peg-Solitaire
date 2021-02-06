@@ -174,8 +174,6 @@ class Board:
         font = ImageFont.truetype('arial.ttf', 30)
         draw = ImageDraw.Draw(img)
         draw.text((0, 0),"Move nr. " + str(self.move_counter), (0,0,0), font=font)
-        #img.show()
-        #img.save("frame.png")
         return img
 
     def matplotlib_to_pil(self, fig):
