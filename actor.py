@@ -53,6 +53,8 @@ class Actor:
     def e_decay(self):
         if self.counter >= variables.episodes - variables.episodes * variables.total_greedy_percent:
             self.e_greedy = 0
+        elif variables.decay_function == "decay":
+            self.e_greedy = max(self.e_greedy* variables.e_decay,0)    
         elif variables.decay_function == "variable_decay":
             n_steps = variables.episodes
             decay_step = 4/n_steps

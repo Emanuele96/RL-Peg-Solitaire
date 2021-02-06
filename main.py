@@ -47,5 +47,6 @@ if __name__ == "__main__":
 
     figure.tight_layout()
     plt.show()
-    plt.plot(critic_module.steps, critic_module.losses)
-    plt.show()
+   # plt.plot(critic_module.steps, critic_module.losses)
+   # plt.show()
+    
