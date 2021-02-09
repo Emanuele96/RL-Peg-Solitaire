@@ -17,12 +17,14 @@ class Critic:
         self.type = variables.state_value_source
         random.seed(variables.random_seed_critic)
 
+        # Initialize a table critic
         if  self.type == "table":
             self.state_values = {}
             self.state_eligibility = {}
             self.lr = variables.lr_critic_table
             self.states_in_episode = list(())
 
+        # Initialize a critic that uses a fuction approximator
         elif self.type == "function":
             self.lr = variables.lr_critic_function
             self.use_cuda = False

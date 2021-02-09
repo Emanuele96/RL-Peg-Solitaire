@@ -51,6 +51,7 @@ class Actor:
         self.e_decay()
 
     def e_decay(self):
+        #Decay the e sigma factor for the e greedy strategy.
         if self.counter >= variables.episodes - variables.episodes * variables.total_greedy_percent:
             self.e_greedy = 0
         elif variables.decay_function == "decay":
