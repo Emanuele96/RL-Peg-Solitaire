@@ -7,10 +7,10 @@ board_size = 5
 
 #system variables
 learning = True
-episodes = 5000
+episodes = 1000
 visualize = True
-frame_delay = 100
-terminal_goal_state_reward = 10
+frame_delay = 400
+terminal_goal_state_reward = 100000
 terminal_state_penalty = 0
 non_terminal_state_reward = 0
 games_to_visualize = 1
@@ -24,7 +24,7 @@ lr_actor = 1
 eligibility_decay_actor = 0.95
 discount_actor = 0.95
 # "decay", "variable_decay" and "linear"
-decay_function = "variable_decay"
+decay_function = "decay"
 total_greedy_percent = 0.01
 
 # Critic variables

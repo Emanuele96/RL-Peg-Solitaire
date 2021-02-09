@@ -26,7 +26,7 @@ if __name__ == "__main__":
         # Run reset routine for Actor and Critic at the end of each episode
         critic_module.reset()
         actor_module.reset()
-        # Append results to plot lists
+        #Run an episode and append results to plot lists
         left_pegs = game.start_game(visualize, train=True)
         episode_number.append(i)
         left_pegs_list.append(left_pegs)

@@ -59,6 +59,6 @@ class Actor:
         elif variables.decay_function == "variable_decay":
             n_steps = variables.episodes
             decay_step = 4/n_steps
-            self.e_greedy = max(pow(1-decay_step, self.counter),0)
+            self.e_greedy = max(pow(1 - decay_step, self.counter),0)
         elif variables.decay_function == "linear":
             self.e_greedy = max(self.e_greedy - ((variables.e_actor_start - variables.e_actor_stop)/ variables.episodes),0)
