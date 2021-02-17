@@ -3,16 +3,16 @@ debug = False
 # Board variables: Diamond (3-6) and Triangle (4-8)
 empty_nodes = [(2,1)]
 board_form = "diamond"
-board_size = 4
+board_size = 6
 
 #system variables
 learning = True
 episodes = 5000
 visualize = True
 frame_delay = 100
-terminal_goal_state_reward = 1000
-terminal_state_penalty = 0
-non_terminal_state_reward = 0
+terminal_goal_state_reward = 10000
+terminal_state_penalty = -100
+non_terminal_state_reward = 1
 games_to_visualize = 1
 
 # Actor variables
