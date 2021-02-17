@@ -224,7 +224,7 @@ class Board:
         if game_over and int(self.state_t.replace('0','')) == 1:
             return variables.terminal_goal_state_reward 
         elif game_over:
-            return variables.terminal_state_penalty
+            return (variables.board_size - variables.terminal_state_penalty * len(self.state_t.replace('0','')))*  variables.terminal_state_penalty
         return variables.non_terminal_state_reward
 
     def update(self, action):

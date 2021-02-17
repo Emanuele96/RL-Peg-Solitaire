@@ -17,8 +17,11 @@ if __name__ == "__main__":
     e_greedy_list = list(())
     game = game.Game(actor_module, critic_module, False)
     bar = IncrementalBar('Training', max=variables.episodes)
+    train = True
     #start a game, an episode and visualize only the last games. Append the remaining pegs per episode
     for i in range(variables.episodes):
+        if i >= variables.episodes - variables.episodes * variables.total_greedy_percent:
+            train = False
         if i >= variables.episodes - variables.games_to_visualize:
             visualize = True
         else: 
@@ -27,7 +30,7 @@ if __name__ == "__main__":
         critic_module.reset()
         actor_module.reset()
         #Run an episode and append results to plot lists
-        left_pegs = game.start_game(visualize, train=True)
+        left_pegs = game.start_game(visualize, train)
         episode_number.append(i)
         left_pegs_list.append(left_pegs)
         e_greedy_list.append(actor_module.e_greedy)
