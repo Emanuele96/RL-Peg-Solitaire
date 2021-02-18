@@ -75,7 +75,7 @@ class Critic:
             #Calculate TD error
             TD_error = self.calculate_TD_error(reward_t1, value_state_t, value_state_t1)
             #calculate desidered value
-            desidered_output = TD_error + value_state_t
+            desidered_output = TD_error #+ value_state_t
             loss = self.loss(value_state_t, desidered_output)
             self.losses.append(loss.item())
             self.step_count += 1

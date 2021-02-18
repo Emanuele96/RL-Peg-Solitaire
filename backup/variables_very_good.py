@@ -2,7 +2,7 @@ debug = False
 
 # Board variables: Diamond (3-6) and Triangle (4-8)
 empty_nodes = [(2,1)]
-board_form = "diamond"
+board_form = "triangle"
 board_size = 5
 
 #system variables
@@ -25,7 +25,7 @@ lr_actor = 0.1
 eligibility_decay_actor = 0.95
 discount_actor = 0.95
 # "decay", "variable_decay" and "linear"
-decay_function = "decay"
+decay_function = "variable_decay"
 total_greedy_percent = 0.1
 
 # Critic variables
@@ -36,5 +36,5 @@ discount_critic = 0.95
 lr_critic_table = 0.1
 eligibility_decay_critic = 0.95
 initialize_values_range_critic = 0.1
-nn_layers =  [20, 10, 1]
-lr_critic_function = 5*10e-1
+nn_layers =  [20, 30, 5, 1]
+lr_critic_function = 5*10e-4

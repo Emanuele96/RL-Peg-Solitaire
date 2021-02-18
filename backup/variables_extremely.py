@@ -3,11 +3,11 @@ debug = False
 # Board variables: Diamond (3-6) and Triangle (4-8)
 empty_nodes = [(2,1)]
 board_form = "diamond"
-board_size = 5
+board_size = 6
 
 #system variables
 learning = True
-episodes = 1000
+episodes = 1500
 visualize = True
 frame_delay = 10
 terminal_goal_state_reward = 1000
